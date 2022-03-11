@@ -15,7 +15,7 @@ QuestionInfo = Tuple[int, str, int, int]
 
 class MathWorksheetGenerator:
     """class for generating math worksheet of specified size and main_type"""
-    def __init__(self, type_: str, max_number: int, question_count: int, page_size: str):
+    def __init__(self, type_: str, max_number: int, question_count: int, page_size: str = 'large'):
         self.main_type = type_
         self.max_number = max_number
         self.question_count = question_count
