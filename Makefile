@@ -10,6 +10,7 @@ REPOSITORY_NAME := bmcclure89/
 IMAGE_NAME := math_worksheet_generator
 TAG := :latest
 
+.PHONY:= all clean test run
 all: build
 
 getcommitid: 
@@ -42,3 +43,8 @@ lint_goodcheck_test:
 	docker run -t --rm -v $${PWD}:/work sider/goodcheck test
 lint_makefile:
 	docker run -v $${PWD}:/tmp/lint -e ENABLE_LINTERS=MAKEFILE_CHECKMAKE oxsecurity/megalinter-ci_light:v6.10.0
+
+clean:
+	'Not implemented'
+test:
+	'Not Implemented'
