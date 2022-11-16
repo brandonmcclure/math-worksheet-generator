@@ -4,8 +4,5 @@
 venv/
 __pycache__/
 
-worksheet.pdf
-examples/large.pdf
-examples/medium.pdf
-examples/small.pdf
 *.pdf
+megalinter-reports/*
