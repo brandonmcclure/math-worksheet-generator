@@ -16,9 +16,10 @@ QuestionInfo = Tuple[int, str, int, int]
 
 class MathWorksheetGenerator:
     """class for generating math worksheet of specified size and main_type"""
-    def __init__(self, type_: str, max_number: int, question_count: int, page_size: str = 'large'):
+    def __init__(self, type_: str, max_number: int, question_count: int, page_size: str = 'large', min_number: int = 0):
         self.main_type = type_
         self.max_number = max_number
+        self.min_number = min_number
         self.question_count = question_count
         self.pdf = FPDF()
 
@@ -79,8 +80,8 @@ class MathWorksheetGenerator:
         To keep it simple, number is generated randomly within the range of 0 to 100
         :return:  list of value1, main_type, value2, and answer for the generated question
         """
-        num_1 = random.randint(0, self.max_number)
-        num_2 = random.randint(0, self.max_number)
+        num_1 = random.randint(self.min_number, self.max_number)
+        num_2 = random.randint(self.min_number, self.max_number)
         if self.main_type == 'mix':
             current_type = random.choice(['+', '-', 'x', '/'])
         else:
@@ -256,9 +257,9 @@ class MathWorksheetGenerator:
                 self.pdf.ln()
 
 
-def main(type_, size, question_count, filename,page_style):
+def main(type_, size, question_count, filename,page_style, min_number=0):
     """main function"""
-    new_pdf = MathWorksheetGenerator(type_, size, question_count,page_style)
+    new_pdf = MathWorksheetGenerator(type_, size, question_count,page_style, min_number=min_number)
     seed_question = new_pdf.get_list_of_questions(question_count)
     new_pdf.make_question_page(seed_question)
     new_pdf.make_answer_page(seed_question)
@@ -302,6 +303,13 @@ if __name__ == "__main__":
         default='small',
         help='',
     )
+    parser.add_argument(
+        '--minNumber',
+        type=int,
+        default=2,
+        help='',
+    )
+    
     args = parser.parse_args()
 
     # how many places, 1:0-9, 2:0-99, 3:0-999
@@ -312,4 +320,4 @@ if __name__ == "__main__":
     else:
         size_ = 99
 
-    main(args.type, size_, args.question_count, args.output, args.pageStyle)
+    main(args.type, size_, args.question_count, args.output, args.pageStyle, args.minNumber)
