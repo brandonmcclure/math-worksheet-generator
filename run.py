@@ -16,21 +16,45 @@ QuestionInfo = Tuple[int, str, int, int]
 
 class MathWorksheetGenerator:
     """class for generating math worksheet of specified size and main_type"""
-    def __init__(self, type_: str, max_number: int, question_count: int):
+    def __init__(self, type_: str, max_number: int, question_count: int, page_size: str = 'large', min_number: int = 0):
         self.main_type = type_
         self.max_number = max_number
+        self.min_number = min_number
         self.question_count = question_count
         self.pdf = FPDF()
 
-        self.small_font_size = 10
-        self.middle_font_size = 15
-        self.large_font_size = 30
-        self.size = 21
+        if page_size == 'small':
+            self.small_font_size = 5
+            self.middle_font_size = 10
+            self.large_font_size = 15
+            self.size = 14
+            self.num_x_cell = 5
+            self.num_y_cell = 3
+        elif page_size == 'medium':
+            self.small_font_size = 10
+            self.middle_font_size = 15
+            self.large_font_size = 30
+            self.size = 21
+            self.num_x_cell = 5
+            self.num_y_cell = 3
+        elif page_size == 'large':
+            self.small_font_size = 10
+            self.middle_font_size = 15
+            self.large_font_size = 30
+            self.size = 21
+            self.num_x_cell = 4
+            self.num_y_cell = 2
+        else:
+            self.small_font_size = 10
+            self.middle_font_size = 15
+            self.large_font_size = 30
+            self.size = 21
+            self.num_x_cell = 4
+            self.num_y_cell = 2
         self.tiny_pad_size = 2
         self.pad_size = 10
         self.large_pad_size = 30
-        self.num_x_cell = 4
-        self.num_y_cell = 2
+        
         self.font_1 = 'Times'
         self.font_2 = 'Helvetica'
 
@@ -56,8 +80,8 @@ class MathWorksheetGenerator:
         To keep it simple, number is generated randomly within the range of 0 to 100
         :return:  list of value1, main_type, value2, and answer for the generated question
         """
-        num_1 = random.randint(0, self.max_number)
-        num_2 = random.randint(0, self.max_number)
+        num_1 = random.randint(self.min_number, self.max_number)
+        num_2 = random.randint(self.min_number, self.max_number)
         if self.main_type == 'mix':
             current_type = random.choice(['+', '-', 'x', '/'])
         else:
@@ -95,6 +119,7 @@ class MathWorksheetGenerator:
 
     def make_question_page(self, data: List[QuestionInfo]):
         """Prepare a single page of questions"""
+        #TODO: validation for none .num_x_cell
         page_area = self.num_x_cell * self.num_y_cell
         problems_per_page = self.split_arr(self.question_count, page_area)
         total_pages = len(problems_per_page)
@@ -232,9 +257,9 @@ class MathWorksheetGenerator:
                 self.pdf.ln()
 
 
-def main(type_, size, question_count, filename):
+def main(type_, size, question_count, filename,page_style, min_number=0):
     """main function"""
-    new_pdf = MathWorksheetGenerator(type_, size, question_count)
+    new_pdf = MathWorksheetGenerator(type_, size, question_count,page_style, min_number=min_number)
     seed_question = new_pdf.get_list_of_questions(question_count)
     new_pdf.make_question_page(seed_question)
     new_pdf.make_answer_page(seed_question)
@@ -273,6 +298,18 @@ if __name__ == "__main__":
     parser.add_argument('--output', metavar='filename.pdf', default='worksheet.pdf',
                         help='Output file to the given filename '
                              '(default: worksheet.pdf)')
+    parser.add_argument(
+        '--pageStyle',
+        default='small',
+        help='',
+    )
+    parser.add_argument(
+        '--minNumber',
+        type=int,
+        default=2,
+        help='',
+    )
+    
     args = parser.parse_args()
 
     # how many places, 1:0-9, 2:0-99, 3:0-999
@@ -283,4 +320,4 @@ if __name__ == "__main__":
     else:
         size_ = 99
 
-    main(args.type, size_, args.question_count, args.output)
+    main(args.type, size_, args.question_count, args.output, args.pageStyle, args.minNumber)

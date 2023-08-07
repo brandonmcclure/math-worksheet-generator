@@ -47,6 +47,17 @@ For calculation up to 3 digits range:
 ```
 python3 run.py --digits 3
 ```
+
+For calculation up from 2 to 9 digits range:
+```
+python3 run.py --min_number 2 --digits 9
+```
+
+For generating different page size, eg. small,medium,large (default is medium):
+```
+python3 run.py --pageStyle
+```
+
 For generating different number of question, eg. 100 (default is 80):
 ```
 python3 run.py -q 100
